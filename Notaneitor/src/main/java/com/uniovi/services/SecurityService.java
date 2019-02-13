@@ -29,7 +29,8 @@ public class SecurityService {
 	public void autoLogin(String dni, String password) {
 		UserDetails userDetails = userDetailsService.loadUserByUsername(dni);
 
-		UsernamePasswordAuthenticationToken aToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+		UsernamePasswordAuthenticationToken aToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails
+				.getAuthorities());
 		authenticationManager.authenticate(aToken);
 		if(aToken.isAuthenticated()) {
 			SecurityContextHolder.getContext().setAuthentication(aToken);
