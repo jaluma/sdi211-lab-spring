@@ -7,21 +7,24 @@
 <nav th:replace="fragments/nav"></nav>
 
 <div class="container">
-	<h2 th:text="#{mark.list.header}">Notas</h2>
-	<p th:text="#{mark.list.subheader}">Las notas que actualmente figuran en el sistema son las siguientes:</p>
+	<h2 th:text="#{user.details.header}">Detalles del usuario</h2>
+	<div class="panel panel-default">
+		<div class="panel-heading" th:text="#{user.dni}">DNI</div>
+		<div class="panel-body" th:text="${user.dni}">
+			28276
+		</div>
+	</div>
 
-	<button type="button" id="updateButton" class="btn btn-default" th:text="#{util.update}">Actualizar</button>
-	<script>
-        $("#updateButton").click(function () {
-            $("#tableMarks").load('/mark/list/update');
-        });
-	</script>
-
+	<div class="panel panel-default">
+		<div class="panel-heading" th:text="#{user.name}">Nombre</div>
+		<div class="panel-body" th:text="${user.name + ' ' + user.lastName}">
+			UO11111@uniovi.es
+		</div>
+	</div>
 	<div class="table-responsive">
 		<table class="table table-hover" th:fragment="tableMarks" id="tableMarks">
 			<thead>
 			<tr>
-				<th class="col-md-1">id</th>
 				<th th:text="#{mark.description}">Descripción</th>
 				<th th:text="#{mark.score}">Puntuación</th>
 				<th class="col-md-1"></th>
@@ -31,7 +34,6 @@
 			</thead>
 			<tbody>
 			<tr th:each="mark : ${markList}">
-				<td th:text="${mark.id}"> 1</td>
 				<td th:text="${mark.description}"> Ejercicio 1</td>
 				<td th:text="${mark.score}">10</td>
 				<td><a th:href="${'/mark/details/' + mark.id}" th:text="#{mark.details}">detalles</a></td>
