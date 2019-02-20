@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class MarksController {
 
@@ -24,6 +26,9 @@ public class MarksController {
 
 	@Autowired
 	private MarkValidator markValidator;
+
+	@Autowired
+	private HttpSession httpSession;
 
 	@RequestMapping("/mark/list")
 	public String getList(Model model) {
