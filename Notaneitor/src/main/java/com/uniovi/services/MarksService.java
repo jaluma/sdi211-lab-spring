@@ -1,6 +1,7 @@
 package com.uniovi.services;
 
 import com.uniovi.entities.Mark;
+import com.uniovi.entities.User;
 import com.uniovi.repositories.MarksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,6 @@ public class MarksService {
 		this.marksRepository = marksRepository;
 		this.httpSession = httpSession;
 	}
-
 
 	public List<Mark> getMarks() {
 		List<Mark> marks = new ArrayList<>();
@@ -67,5 +67,17 @@ public class MarksService {
 		}
 
 	}
+
+	public List<Mark> getMarksForUser(User user) {
+		List<Mark> marks = new ArrayList<>();
+		if(user.getRole().equals("ROLE_STUDENT")) {
+			marks = marksRepository.findAllByUser(user);
+		}
+		if(user.getRole().equals("ROLE_PROFESSOR")) {
+			marks = getMarks();
+		}
+		return marks;
+	}
+
 
 }
