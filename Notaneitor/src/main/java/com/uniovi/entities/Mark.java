@@ -10,7 +10,8 @@ public class Mark {
 	private String description;
 	private Double score;
 	private Boolean resend = false;
-	@ManyToOne
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 

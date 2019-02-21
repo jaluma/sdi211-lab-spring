@@ -11,14 +11,33 @@
 <div class="container">
 	<h2 th:text="#{mark.list.header}">Notas</h2>
 
+	<form class="navbar-form" action="/mark/list">
+		 <div class="form-group">
+		    <input name="searchText" type="text" class="form-control" size="50" placeholder="Buscar por descripción o nombre del alumno">
+		 </div>
+		 <button type="submit" class="btn btn-default">Buscar</button>
+	</form>
+
 	<p th:text="#{mark.list.subheader}">Las notas que actualmente figuran en el sistema son las siguientes:</p>
 
 	<button type="button" id="updateButton" class="btn btn-default" th:text="#{util.update}">Actualizar</button>
-	<script>
-        $("#updateButton").click(function () {
-            $("#tableMarks").load('/mark/list/update');
-        });
-	</script>
+	<script th:inline="javascript">
+		 /*<![CDATA[*/
+         $("#updateButton").click(function () {
+             var numberPage = $.urlParam('page');
+             var urlUpdate = '/mark/list/update';
+             if (numberPage != null) {
+                 urlUpdate += "?page=" + numberPage[0];
+             }
+             var searchText = $.urlParam('searchText');
+             if (searchText != null) {
+                 urlUpdate += "?searchText=" + searchText;
+             }
+             $("#tableMarks").load(urlUpdate);
+         });
+         /*]]>*/
+	 </script>
+
 
 	<div class="table-responsive">
 		<table class="table table-hover" th:fragment="tableMarks" id="tableMarks">
@@ -39,31 +58,38 @@
 				<td th:text="${mark.score}">10</td>
 				<td><a th:href="${'/mark/details/' + mark.id}" th:text="#{mark.details}">detalles</a></td>
 				<td>
-					<a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/edit/' + mark.id}"
-					   th:text="#{mark.modify}">modificar</a>
+					<a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/edit/' + mark.id}" th:text="#{mark.modify}">modificar</a>
 
 				<div sec:authorize="hasRole('ROLE_STUDENT')">
 					<div th:if="${mark.resend}">
-						<button type="button" th:id="${'resendButton' + mark.id}"
-						        class="btn btn-info">Reenviar</button>
+						<button type="button" th:id="${'resendButton' + mark.id}" class="btn btn-info">Reenviar</button>
 						 <script th:inline="javascript">
 							 /*<![CDATA[*/
                              $("#resendButton" + [[${mark.id}]]).click(function () {
                                  $.get("/mark/[[${mark.id}]]/noresend", function () {
-                                     $("#tableMarks").load('/mark/list/update');
+                                     var numberPage = $.urlParam('page');
+                                     var urlUpdate = '/mark/list/update';
+                                     if (numberPage != null) {
+                                         urlUpdate += "?page=" + numberPage[0];
+                                     }
+                                     $("#tableMarks").load(urlUpdate);
                                  });
                              });
                              /*]]>*/
 						 </script>
 				    </div>
 					<div th:unless="${mark.resend}">
-						<button type="button" th:id="${'noresendButton' + mark.id}"
-						        class="btn btn-default">No reenviar</button>
+						<button type="button" th:id="${'noresendButton' + mark.id}" class="btn btn-default">No reenviar</button>
 						<script th:inline="javascript">
 							 /*<![CDATA[*/
                              $("#noresendButton" + [[${mark.id}]]).click(function () {
                                  $.get("/mark/[[${mark.id}]]/resend", function () {
-                                     $("#tableMarks").load('/mark/list/update');
+                                     var numberPage = $.urlParam('page');
+                                     var urlUpdate = '/mark/list/update';
+                                     if (numberPage != null) {
+                                         urlUpdate += "?page=" + numberPage[0];
+                                     }
+                                     $("#tableMarks").load(urlUpdate);
                                  });
                              });
                              /*]]>*/
@@ -72,12 +98,14 @@
 				</div>
 
 				</td>
-				<td><a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/delete/' + mark.id}"
-				       th:text="#{mark.remove}">eliminar</a></td>
+				<td><a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/delete/' + mark.id}" th:text="#{mark.remove}">eliminar</a></td>
 			</tr>
 			</tbody>
 		</table>
 	</div>
+	
+	<footer th:replace="fragments/pagination"></footer>
+	
 </div>
 
 <footer th:replace="fragments/footer"></footer>

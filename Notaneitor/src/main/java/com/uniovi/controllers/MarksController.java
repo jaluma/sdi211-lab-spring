@@ -6,6 +6,8 @@ import com.uniovi.services.MarksService;
 import com.uniovi.services.UsersService;
 import com.uniovi.validators.MarkValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,23 +41,24 @@ public class MarksController {
 	}
 
 	@RequestMapping("/mark/list")
-	public String getList(Model model, Principal principal, @RequestParam(required = false) String searchText) {
+	public String getList(Model model, Pageable pageable, Principal principal, @RequestParam(required = false) String searchText) {
 		String dni = principal.getName(); // DNI es el name de la autenticación
 		User user = usersService.getUserByDni(dni);
+
+		Page<Mark> marks; // no se inicializa, se hace abajo
 		if(searchText != null && !searchText.isEmpty()) {
-			model.addAttribute("markList", marksService.searchMarksByDescriptionAndNameForUser(searchText, user));
+			marks = marksService.searchMarksByDescriptionAndNameForUser(pageable, searchText, user);
 		} else {
-			model.addAttribute("markList", marksService.getMarksForUser(user));
+			marks = marksService.getMarksForUser(pageable, user);
 		}
+		model.addAttribute("page", marks);
+		model.addAttribute("markList", marks.getContent());
 		return "mark/list";
 	}
 
 	@RequestMapping("/mark/list/update")
-	public String updateList(Model model, Principal principal) {
-		String dni = principal.getName(); // DNI es el name de la autenticación
-		User user = usersService.getUserByDni(dni);
-		model.addAttribute("markList", marksService.getMarksForUser(user));
-		return "mark/list :: tableMarks";
+	public String updateList(Model model, Pageable pageable, Principal principal, @RequestParam(required = false) String searchText) {
+		return getList(model, pageable, principal, searchText) + ":: tableMarks";
 	}
 
 	@RequestMapping(value = "/mark/add", method = RequestMethod.GET)
