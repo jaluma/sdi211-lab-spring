@@ -9,27 +9,34 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsersService {
-	@Autowired
-	private UsersRepository usersRepository;
+	private final UsersRepository usersRepository;
+
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	public UsersService(UsersRepository usersRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+		this.usersRepository = usersRepository;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+	}
 
 	@PostConstruct
 	public void init() {
 	}
 
 	public List<User> getUsers() {
-		List<User> users = new ArrayList<User>();
+		List<User> users = new ArrayList<>();
 		usersRepository.findAll().forEach(users::add);
 		return users;
 	}
 
 	public User getUser(Long id) {
-		return usersRepository.findById(id).get();
+		Optional<User> optional = usersRepository.findById(id);
+
+		return optional.orElse(null);
 	}
 
 	public void addUser(User user) {

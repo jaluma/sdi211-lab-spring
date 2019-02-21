@@ -18,17 +18,22 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class MarksController {
 
-	@Autowired //Inyectar el servicio
-	private MarksService marksService;
+	//Inyectar el servicio
+	private final MarksService marksService;
+
+	private final UsersService usersService;
+
+	private final MarkValidator markValidator;
+
+	private final HttpSession httpSession;
 
 	@Autowired
-	private UsersService usersService;
-
-	@Autowired
-	private MarkValidator markValidator;
-
-	@Autowired
-	private HttpSession httpSession;
+	public MarksController(MarksService marksService, UsersService usersService, MarkValidator markValidator, HttpSession httpSession) {
+		this.marksService = marksService;
+		this.usersService = usersService;
+		this.markValidator = markValidator;
+		this.httpSession = httpSession;
+	}
 
 	@RequestMapping("/mark/list")
 	public String getList(Model model) {
@@ -94,6 +99,18 @@ public class MarksController {
 		original.setDescription(mark.getDescription());
 		marksService.addMark(original);
 		return "redirect:/mark/details/" + id;
+	}
+
+	@RequestMapping(value = "/mark/{id}/resend", method = RequestMethod.GET)
+	public String setResendTrue(Model model, @PathVariable Long id) {
+		marksService.setMarkResend(true, id);
+		return "redirect:/mark/list";
+	}
+
+	@RequestMapping(value = "/mark/{id}/noresend", method = RequestMethod.GET)
+	public String setResendFalse(Model model, @PathVariable Long id) {
+		marksService.setMarkResend(false, id);
+		return "redirect:/mark/list";
 	}
 
 }

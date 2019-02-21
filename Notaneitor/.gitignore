@@ -3,17 +3,13 @@
 
 ### STS ###
 .apt_generated
-.classpath
 .factorypath
-.project
 .settings
 .springBeans
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
 *.iws
-*.iml
 *.ipr
 
 ### NetBeans ###
@@ -23,3 +19,5 @@
 /nbdist/
 /.nb-gradle/
 /build/
+bin/
+out/

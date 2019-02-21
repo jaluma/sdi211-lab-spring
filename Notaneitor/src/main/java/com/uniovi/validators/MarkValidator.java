@@ -11,8 +11,12 @@ import org.springframework.validation.Validator;
 @Component
 public class MarkValidator implements Validator {
 
+	private final MarksService marksService;
+
 	@Autowired
-	private MarksService marksService;
+	public MarkValidator(MarksService marksService) {
+		this.marksService = marksService;
+	}
 
 	@Override
 	public boolean supports(Class<?> aClass) {

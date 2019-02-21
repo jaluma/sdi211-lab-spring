@@ -20,18 +20,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class UsersController {
+	private final UsersService usersService;
+	private final MarksService marksService;
+	private final SecurityService securityService;
+	private final SignUpFormValidator signUpFormValidator;
+	private final UserValidator userValidator;
+	private final RolesService rolesService;
+
 	@Autowired
-	private UsersService usersService;
-	@Autowired
-	private MarksService marksService;
-	@Autowired
-	private SecurityService securityService;
-	@Autowired
-	private SignUpFormValidator signUpFormValidator;
-	@Autowired
-	private UserValidator userValidator;
-	@Autowired
-	private RolesService rolesService;
+	public UsersController(UsersService usersService, MarksService marksService, SecurityService securityService, SignUpFormValidator signUpFormValidator, UserValidator userValidator, RolesService rolesService) {
+		this.usersService = usersService;
+		this.marksService = marksService;
+		this.securityService = securityService;
+		this.signUpFormValidator = signUpFormValidator;
+		this.userValidator = userValidator;
+		this.rolesService = rolesService;
+	}
 
 	@RequestMapping("/user/list")
 	public String getListado(Model model) {

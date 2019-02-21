@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head">
+	<title>Inicio</title>
+</head>
 <body>
 <nav th:replace="fragments/nav"></nav>
 <div class="container" style="text-align: center">
@@ -8,7 +10,7 @@
 	<h3 th:text="#{welcome.private}">Esta es una zona privada la web</h3>
 	<p th:text="#{welcome.auth(${#httpServletRequest.remoteUser})}">
 		Usuario Autenticado como:
-		<span th:inline="text"> [[${#httpServletRequest.remoteUser}]] </span>
+		<span th:inline="text" sec:authentication="principal.username"></span>
 	</p>
 	<p th:text="#{welcome.marks}">
 		Notas del usuario
