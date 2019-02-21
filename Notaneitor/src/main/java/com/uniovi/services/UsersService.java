@@ -3,6 +3,8 @@ package com.uniovi.services;
 import com.uniovi.entities.User;
 import com.uniovi.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +55,13 @@ public class UsersService {
 
 	public void deleteUser(Long id) {
 		usersRepository.deleteById(id);
+	}
+
+	public Page<User> getUsers(Pageable pageable) {
+		return usersRepository.findAll(pageable);
+	}
+
+	public Page<User> searchUsers(Pageable pageable, String searchText) {
+		return usersRepository.findAllByDniAndFullName(pageable, searchText);
 	}
 }

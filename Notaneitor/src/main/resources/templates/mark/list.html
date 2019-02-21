@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head">
-	<title>"Lista de notas"</title>
+	<title>Notaneitor: Lista de notas</title>
 </head>
 <body>
 
@@ -20,27 +20,49 @@
 
 	<p th:text="#{mark.list.subheader}">Las notas que actualmente figuran en el sistema son las siguientes:</p>
 
-	<button type="button" id="updateButton" class="btn btn-default" th:text="#{util.update}">Actualizar</button>
-	<script th:inline="javascript">
-		 /*<![CDATA[*/
-         $("#updateButton").click(function () {
-             var numberPage = $.urlParam('page');
-             var urlUpdate = '/mark/list/update';
-             if (numberPage != null) {
-                 urlUpdate += "?page=" + numberPage[0];
-             }
-             var searchText = $.urlParam('searchText');
-             if (searchText != null) {
-                 urlUpdate += "?searchText=" + searchText;
-             }
-             $("#tableMarks").load(urlUpdate);
-         });
-         /*]]>*/
-	 </script>
-
-
-	<div class="table-responsive">
-		<table class="table table-hover" th:fragment="tableMarks" id="tableMarks">
+	<form class="navbar-form">
+		<div class="form-group">
+			<button type="button" id="updateButton" class="btn btn-default" th:text="#{util.update}">Actualizar</button>
+			<script th:inline="javascript">
+				 /*<![CDATA[*/
+                 $("#updateButton").click(function () {
+                     var numberPage = $.urlParam('page');
+                     var urlUpdate = '/mark/list/update';
+                     if (numberPage != null) {
+                         urlUpdate += "?page=" + numberPage[0];
+                     }
+                     var searchText = $.urlParam('searchText');
+                     if (searchText != null) {
+                         urlUpdate += "?searchText=" + searchText;
+                     }
+                     $("#tableMarks").load(urlUpdate);
+                 });
+                 /*]]>*/
+			 </script>
+		</div>
+		<div class="form-group">
+			<button type="button" id="removeSearch" class="btn btn-default">Quitar filtro</button>
+			<script th:inline="javascript">
+				 /*<![CDATA[*/
+                 $("#removeSearch").click(function () {
+                     var numberPage = $.urlParam('page');
+                     var urlUpdate = '/mark/list/update';
+                     if (numberPage != null) {
+                         urlUpdate += "?page=" + numberPage[0];
+                     }
+                     var searchText = $.urlParam('searchText');
+                     if (searchText != null) {
+                         urlUpdate += "?searchText=" + searchText;
+                     }
+                     $("#tableMarks").load(urlUpdate);
+                 });
+                 /*]]>*/
+			 </script>
+		</div>
+	</form>
+	
+	<div class="table-responsive" th:fragment="tableMarks" id="tableMarks">
+		<table class="table table-hover">
 			<thead>
 			<tr>
 				<th class="col-md-1">id</th>
@@ -60,51 +82,50 @@
 				<td>
 					<a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/edit/' + mark.id}" th:text="#{mark.modify}">modificar</a>
 
-				<div sec:authorize="hasRole('ROLE_STUDENT')">
-					<div th:if="${mark.resend}">
-						<button type="button" th:id="${'resendButton' + mark.id}" class="btn btn-info">Reenviar</button>
-						 <script th:inline="javascript">
-							 /*<![CDATA[*/
-                             $("#resendButton" + [[${mark.id}]]).click(function () {
-                                 $.get("/mark/[[${mark.id}]]/noresend", function () {
-                                     var numberPage = $.urlParam('page');
-                                     var urlUpdate = '/mark/list/update';
-                                     if (numberPage != null) {
-                                         urlUpdate += "?page=" + numberPage[0];
-                                     }
-                                     $("#tableMarks").load(urlUpdate);
+					<div sec:authorize="hasRole('ROLE_STUDENT')">
+						<div th:if="${mark.resend}">
+							<button type="button" th:id="${'resendButton' + mark.id}" class="btn btn-info">Reenviar</button>
+							 <script th:inline="javascript">
+								 /*<![CDATA[*/
+                                 $("#resendButton" + [[${mark.id}]]).click(function () {
+                                     $.get("/mark/[[${mark.id}]]/noresend", function () {
+                                         var numberPage = $.urlParam('page');
+                                         var urlUpdate = '/mark/list/update';
+                                         if (numberPage != null) {
+                                             urlUpdate += "?page=" + numberPage[0];
+                                         }
+                                         $("#tableMarks").load(urlUpdate);
+                                     });
                                  });
-                             });
-                             /*]]>*/
-						 </script>
-				    </div>
-					<div th:unless="${mark.resend}">
-						<button type="button" th:id="${'noresendButton' + mark.id}" class="btn btn-default">No reenviar</button>
-						<script th:inline="javascript">
-							 /*<![CDATA[*/
-                             $("#noresendButton" + [[${mark.id}]]).click(function () {
-                                 $.get("/mark/[[${mark.id}]]/resend", function () {
-                                     var numberPage = $.urlParam('page');
-                                     var urlUpdate = '/mark/list/update';
-                                     if (numberPage != null) {
-                                         urlUpdate += "?page=" + numberPage[0];
-                                     }
-                                     $("#tableMarks").load(urlUpdate);
+                                 /*]]>*/
+							 </script>
+					    </div>
+						<div th:unless="${mark.resend}">
+							<button type="button" th:id="${'noresendButton' + mark.id}" class="btn btn-default">No reenviar</button>
+							<script th:inline="javascript">
+								 /*<![CDATA[*/
+                                 $("#noresendButton" + [[${mark.id}]]).click(function () {
+                                     $.get("/mark/[[${mark.id}]]/resend", function () {
+                                         var numberPage = $.urlParam('page');
+                                         var urlUpdate = '/mark/list/update';
+                                         if (numberPage != null) {
+                                             urlUpdate += "?page=" + numberPage[0];
+                                         }
+                                         $("#tableMarks").load(urlUpdate);
+                                     });
                                  });
-                             });
-                             /*]]>*/
-						</script>
-				   </div>
-				</div>
+                                 /*]]>*/
+							</script>
+					   </div>
+					</div>
 
 				</td>
 				<td><a sec:authorize="hasRole('ROLE_PROFESSOR')" th:href="${'/mark/delete/' + mark.id}" th:text="#{mark.remove}">eliminar</a></td>
 			</tr>
 			</tbody>
 		</table>
+		<footer th:replace="fragments/pagination"></footer>
 	</div>
-	
-	<footer th:replace="fragments/pagination"></footer>
 	
 </div>
 

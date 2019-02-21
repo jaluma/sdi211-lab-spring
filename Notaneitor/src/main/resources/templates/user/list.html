@@ -1,14 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head"></head>
+<head th:replace="fragments/head">
+	<title>Notaineitor: Lista de usuarios</title>
+</head>
 <body>
 <!-- Barra de Navegación superior -->
 <nav th:replace="fragments/nav"></nav>
 <div class="container">
 	<h2 th:text="#{user.list.header}">Usuarios</h2>
+	
+	<form class="navbar-form" action="/user/list">
+		 <div class="form-group">
+		    <input name="searchText" type="text" class="form-control" size="50" placeholder="Buscar por DNI, nombre o apellido del alumno">
+		 </div>
+		 <button type="submit" class="btn btn-default">Buscar</button>
+	</form>
+	
 	<p th:text="#{user.list.subheader}">Los usuarios que actualmente figuran en el sistema son los
         siguientes:</p>
-    <div class="table-responsive">
+	
+	<form class="navbar-form">
+		<div class="form-group">
+			<button type="button" id="removeSearch" class="btn btn-default">Quitar filtro</button>
+			<script th:inline="javascript">
+				 /*<![CDATA[*/
+                 $("#removeSearch").click(function () {
+                     var numberPage = $.urlParam('page');
+                     var urlUpdate = '/user/list/update';
+                     if (numberPage != null) {
+                         urlUpdate += "?page=" + numberPage[0];
+                     }
+                     var searchText = $.urlParam('searchText');
+                     if (searchText != null) {
+                         urlUpdate += "?searchText=" + searchText;
+                     }
+                     $("#tableUsers").load(urlUpdate);
+                 });
+                 /*]]>*/
+			 </script>
+		</div>
+	</form>
+	
+    <div class="table-responsive" th:fragment="tableUsers" id="tableUsers">
         <table class="table table-hover">
             <thead>
             <tr>
@@ -33,6 +66,7 @@
             </tr>
             </tbody>
         </table>
+	    <footer th:replace="fragments/pagination"></footer>
     </div>
 </div>
 <footer th:replace="fragments/footer"></footer>

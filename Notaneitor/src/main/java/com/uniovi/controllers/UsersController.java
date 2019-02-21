@@ -8,6 +8,8 @@ import com.uniovi.services.UsersService;
 import com.uniovi.validators.SignUpFormValidator;
 import com.uniovi.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.security.Principal;
 
 @Controller
 public class UsersController {
@@ -38,9 +43,21 @@ public class UsersController {
 	}
 
 	@RequestMapping("/user/list")
-	public String getListado(Model model) {
-		model.addAttribute("usersList", usersService.getUsers());
+	public String getListado(Model model, Pageable pageable, Principal principal, @RequestParam(required = false) String searchText) {
+		Page<User> users; // no se inicializa, se hace abajo
+		if(searchText != null && !searchText.isEmpty()) {
+			users = usersService.searchUsers(pageable, searchText);
+		} else {
+			users = usersService.getUsers(pageable);
+		}
+		model.addAttribute("page", users);
+		model.addAttribute("usersList", users.getContent());
 		return "user/list";
+	}
+
+	@RequestMapping("/user/list/update")
+	public String updateList(Model model, Pageable pageable, Principal principal, @RequestParam(required = false) String searchText) {
+		return getListado(model, pageable, principal, searchText) + ":: tableUsers";
 	}
 
 	@RequestMapping(value = "/user/add")
